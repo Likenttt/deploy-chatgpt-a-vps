@@ -2,10 +2,21 @@
 set -e
 # Tested on AlmaLinux
 
-# Define color variables
+#!/bin/bash
+
+Define color variables
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
+
+Get current Node.js version
+node_version=$(node -v)
+
+Check if Node.js version is 18 or higher
+if [[ "$(printf '%s\n' "v18" "$node_version" | sort -V | head -n1)" != "v18" ]]; then
+  echo -e "${RED}Node.js version 18 or higher is not installed. Please install Node.js 18 or higher and try again.${NC}"
+  exit 1
+fi
 
 # Get current IP address
 current_ip=$(curl -s https://ipinfo.io/ip)
@@ -177,10 +188,20 @@ select option in "${options[@]}"; do
     ;;
   2)
     option=${options[1]}
-    echo "You have chosen: $option . Cloning the repository... Please wait."
-    # Clone the repository
-    git clone $option
-    cd chatgpt-vercel
+
+    echo "You have chosen: $option. Checking if the repository already exists..."
+
+    # Check if the repository already exists
+    if [ -d "chatgpt-vercel" ]; then
+      echo "The repository already exists. Updating to the latest version..."
+      cd chatgpt-vercel
+      git pull
+    else
+      echo "The repository does not exist. Cloning the repository... Please wait."
+      git clone $option
+      cd chatgpt-vercel
+    fi
+
     # Install pm2 to manage the Node.js process
     sudo npm install pm2@latest -g
     # Install dependencies
