@@ -46,12 +46,11 @@ done
 # Get domain name
 read -p "Enter the domain name (e.g., example.com): " domain_name
 
-# Validate domain name
-while [[ ! $domain_name =~ ^(?=.{1,253}$)(?:(?:[a-zA-Z0-9_]{1,63}\.){1,126}[a-zA-Z]{2,63})$ ]]; do
+# validate domain name
+while [[ ! $domain_name =~ ^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; do
   echo -e "${RED}Invalid domain name format.${NC} Please enter a valid domain name (e.g., example.com):"
   read domain_name
 done
-
 # Check if domain is pointing to the current IP address
 domain_ip=$(dig +short $domain_name)
 while [[ $current_ip != $domain_ip ]]; do
