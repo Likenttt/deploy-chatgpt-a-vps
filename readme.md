@@ -10,6 +10,7 @@ This script is merely tested on Almalinux8. It may not work on other Linux distr
 2. A domain name
 3. An email address
 4. A ChatGPT api key
+5. Install dependencies with `bash install-dependencies.sh`
 
 ## Deploy
 
