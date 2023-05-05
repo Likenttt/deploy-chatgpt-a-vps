@@ -1,19 +1,6 @@
 #!/bin/bash
 set -e
 # Tested on AlmaLinux
-# Install dependencies
-sudo yum update -y
-sudo yum install -y epel-release
-sudo yum install -y curl
-curl -sL https://rpm.nodesource.com/setup_18.x | sudo bash -
-sudo yum module enable -y nodejs
-sudo yum install -y nodejs
-sudo yum install -y nginx git python3 npm zsh vim bind-utils docker wget gcc-c++ make nodejs npm certbot util-linux-user httpd-tools
-sudo yum groupinstall -y "Development Tools"
-sudo dnf install -y python3-certbot-nginx
-sudo firewall-cmd --permanent --add-service=http
-sudo firewall-cmd --permanent --add-service=https
-sudo firewall-cmd --reload
 
 # Define color variables
 GREEN='\033[0;32m'
@@ -30,20 +17,37 @@ echo "1. You have a domain name and it is pointing to the current IP address ($c
 echo "2. You have a valid email address for SSL certificate."
 echo "3. You have a valid chatGPT API key."
 
-# Get chatGPT API key
-read -p "Enter your chatGPT API key (If you don't have any API keys, generate one in https://platform.openai.com/account/api-keys. The API key looks like sk-xxxxxx): " chatgpt_api_key
+echo -n "Type 'yes', 'Y', or 'y' to confirm that you have met all the requirements and continue the script, or type anything else to exit: "
+read confirmation
 
-# Validate chatGPT API key
-while [[ ! $chatgpt_api_key =~ ^sk-[a-zA-Z0-9]{48}$ ]]; do
-  echo -e "${RED}Invalid API key format.${NC} Please enter a valid API key (should look like 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):"
-  read chatgpt_api_key
+# Convert the input to lowercase for easier comparison
+confirmation=$(echo "$confirmation" | tr '[:upper:]' '[:lower:]')
+
+if [ "$confirmation" != "yes" ] && [ "$confirmation" != "y" ]; then
+  echo "Exiting the script."
+  exit 1
+fi
+
+# Get chatGPT API key
+validate_api_key=true
+
+while $validate_api_key; do
+  read -p "Enter your chatGPT API key (If you don't have any API keys, generate one in https://platform.openai.com/account/api-keys. The API key looks like sk-xxxxxx): " chatgpt_api_key
+
+  if [ -z "$chatgpt_api_key" ]; then
+    echo -e "${RED}API key cannot be empty.${NC} Please enter a valid API key:"
+  elif [[ $chatgpt_api_key =~ ^sk-[a-zA-Z0-9]{48}$ ]]; then
+    validate_api_key=false
+  else
+    echo -e "${RED}Invalid API key format.${NC} Please enter a valid API key (should look like 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):"
+  fi
 done
 
 # Get domain name
 read -p "Enter the domain name (e.g., example.com): " domain_name
 
 # Validate domain name
-while [[ ! $domain_name =~ ^(?=.{1,253})(?:(?:[a-zA-Z0-9_]{1,63}\.){1,127}[a-zA-Z]{2,63})$ ]]; do
+while [[ ! $domain_name =~ ^(?=.{1,253})(?:(?:[a-zA-Z0-9_-]{1,63}\.){1,127}[a-zA-Z]{2,63})$ ]]; do
   echo -e "${RED}Invalid domain name format.${NC} Please enter a valid domain name (e.g., example.com):"
   read domain_name
 done
