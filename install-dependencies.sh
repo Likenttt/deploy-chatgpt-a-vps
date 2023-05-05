@@ -8,7 +8,7 @@ sudo yum remove -y nodejs
 curl -sL https://rpm.nodesource.com/setup_18.x | sudo bash -
 sudo yum install -y nodejs
 
-sudo yum install -y nginx git python3 zsh vim bind-utils docker wget gcc-c++ certbot util-linux-user httpd-tools
+sudo yum install -y nginx git python3 lsof zsh vim bind-utils docker wget gcc-c++ certbot util-linux-user httpd-tools
 sudo yum groupinstall -y "Development Tools"
 sudo dnf install -y python3-certbot-nginx
 sudo firewall-cmd --permanent --add-service=http

@@ -76,15 +76,20 @@ read -p "Enter the nginx auth user (e.g., user): " auth_user
 auth_password=""
 auth_password_confirm=""
 
-while [ "$auth_password" != "$auth_password_confirm" ]; do
+while true; do
   echo "Enter the nginx auth password:"
-  read auth_password
+  read -s auth_password
+  if [ -z "$auth_password" ]; then
+    echo -e "${RED}Password cannot be empty.${NC} Please try again."
+    continue
+  fi
 
   echo "Confirm the nginx auth password:"
-  read auth_password_confirm
-
+  read -s auth_password_confirm
   if [ "$auth_password" != "$auth_password_confirm" ]; then
     echo -e "${RED}Passwords do not match.${NC} Please try again."
+  else
+    break
   fi
 done
 
