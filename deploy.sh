@@ -147,10 +147,10 @@ server {
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
-    auth_basic \"Restricted Content\";
-    auth_basic_user_file /etc/nginx/.htpasswd;
 
     location / {
+        auth_basic \"Restricted Content\";
+        auth_basic_user_file /etc/nginx/.htpasswd;
 
         proxy_pass http://localhost:$port;
         proxy_set_header Host \$host;
