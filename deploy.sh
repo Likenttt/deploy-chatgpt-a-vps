@@ -208,7 +208,7 @@ NO_GFW=false
     {
       name: 'chatgpt-vercel',
       script: 'npm',
-      args: 'run start',
+      args: 'run start --port $port',
       watch: false,
       autorestart: true,
       restart_delay: 5000, // 重启延迟 5 秒，可根据需要调整
