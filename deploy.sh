@@ -4,7 +4,7 @@ set -e
 
 #!/bin/bash
 
-Define color variables
+#Define color variables
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
@@ -115,7 +115,7 @@ done
 echo -e "Valid email address: ${GREEN}$email${NC}"
 
 # Generate SSL certificate
-if ! sudo certbot certificates --domain $domain_name --no-color | grep -q "VALID"; then
+if ! sudo certbot certificates --domain $domain_name --no-ansi | grep -q "VALID"; then
   sudo certbot --nginx -d $domain_name --non-interactive --agree-tos --email $email
 else
   echo "SSL certificate for $domain_name already exists and is valid. Skipping certbot."
