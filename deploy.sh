@@ -47,7 +47,7 @@ done
 read -p "Enter the domain name (e.g., example.com): " domain_name
 
 # Validate domain name
-while [[ ! $domain_name =~ ^(?=.{1,253})(?:(?:[a-zA-Z0-9_-]{1,63}\.){1,127}[a-zA-Z]{2,63})$ ]]; do
+while [[ ! $domain_name =~ ^(?=.{1,253}$)(?:(?:[a-zA-Z0-9_]{1,63}\.){1,126}[a-zA-Z]{2,63})$ ]]; do
   echo -e "${RED}Invalid domain name format.${NC} Please enter a valid domain name (e.g., example.com):"
   read domain_name
 done
