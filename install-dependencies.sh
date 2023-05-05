@@ -4,6 +4,7 @@ echo "We are going to install dependencies and configure the server. This may ta
 sudo yum update -y
 sudo yum install -y epel-release
 sudo yum install -y curl
+sudo yum remove -y nodejs npm
 curl -sL https://rpm.nodesource.com/setup_18.x | sudo bash -
 sudo yum module enable -y nodejs
 sudo yum install -y nodejs
