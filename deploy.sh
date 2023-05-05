@@ -9,10 +9,10 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-Get current Node.js version
+#Get current Node.js version
 node_version=$(node -v)
 
-Check if Node.js version is 18 or higher
+#Check if Node.js version is 18 or higher
 if [[ "$(printf '%s\n' "v18" "$node_version" | sort -V | head -n1)" != "v18" ]]; then
   echo -e "${RED}Node.js version 18 or higher is not installed. Please install Node.js 18 or higher and try again.${NC}"
   exit 1
