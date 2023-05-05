@@ -104,7 +104,11 @@ done
 echo -e "Valid email address: ${GREEN}$email${NC}"
 
 # Generate SSL certificate
-sudo certbot --nginx -d $domain_name --non-interactive --agree-tos --email $email
+if ! sudo certbot certificates --domain $domain_name --no-color | grep -q "VALID"; then
+  sudo certbot --nginx -d $domain_name --non-interactive --agree-tos --email $email
+else
+  echo "SSL certificate for $domain_name already exists and is valid. Skipping certbot."
+fi
 
 # Create htpasswd file
 sudo htpasswd -c -b /etc/nginx/.htpasswd $auth_user $auth_password
@@ -148,7 +152,7 @@ server {
 echo "$nginx_config" | sudo tee /etc/nginx/conf.d/$domain_name.conf
 
 # Restart Nginx and reload firewall rules
-sudo systemctl restart nginx
+sudo nginx -s reload
 
 echo "SSL certificate installed, and Nginx configured with authentication for domain $domain_name."
 
