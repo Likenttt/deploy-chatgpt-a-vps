@@ -81,7 +81,7 @@ while [ "$auth_password" != "$auth_password_confirm" ]; do
   read auth_password_confirm
 
   if [ "$auth_password" != "$auth_password_confirm" ]; then
-      echo -e "${RED}Passwords do not match.${NC} Please try again."
+    echo -e "${RED}Passwords do not match.${NC} Please try again."
   fi
 done
 
@@ -95,7 +95,6 @@ done
 
 echo -e "Valid email address: ${GREEN}$email${NC}"
 
-
 # Generate SSL certificate
 sudo certbot --nginx -d $domain_name --non-interactive --agree-tos --email $email
 
@@ -107,7 +106,6 @@ if nginx -t; then
 else
   echo "Nginx configuration is invalid"
 fi
-
 
 # Create Nginx configuration
 nginx_config="server {
@@ -152,32 +150,31 @@ options=("https://github.com/Yidadaa/ChatGPT-Next-Web" "https://github.com/ouron
 PS3="Enter 1 or 2 (default is 1): "
 select option in "${options[@]}"; do
   case $REPLY in
-    1|"" )
-      option=${options[0]}
-      echo "You have chosen: $option"
-      docker pull yidadaa/chatgpt-next-web
+  1 | "")
+    option=${options[0]}
+    echo "You have chosen: $option"
+    docker pull yidadaa/chatgpt-next-web
 
-        docker run -d -p $port:3000 -e OPENAI_API_KEY="$chatgpt_api_key" yidadaa/chatgpt-next-web
-        if [ $? -eq 0 ]; then
-            echo "All done! You can now access your website at https://$domain_name."
-        else
-            echo "yidadaa/chatgpt-next-web failed to start."
-        fi
-      break
-      ;;
-    2)
-      option=${options[1]}
-      echo "You have chosen: $option . Cloning the repository... Please wait."
-      # Clone the repository
-      git clone $option
-      cd chatgpt-vercel
-      # Install pm2 to manage the Node.js process
-      sudo npm install pm2@latest -g
-      # Install dependencies
-      npm install
-      # Create .env file
-      env_config="
-      CLIENT_GLOBAL_SETTINGS={"APIKey":"","password":"","enterToSend":true}
+    docker run -d -p $port:3000 -e OPENAI_API_KEY="$chatgpt_api_key" yidadaa/chatgpt-next-web
+    if [ $? -eq 0 ]; then
+      echo "All done! You can now access your website at https://$domain_name."
+    else
+      echo "yidadaa/chatgpt-next-web failed to start."
+    fi
+    break
+    ;;
+  2)
+    option=${options[1]}
+    echo "You have chosen: $option . Cloning the repository... Please wait."
+    # Clone the repository
+    git clone $option
+    cd chatgpt-vercel
+    # Install pm2 to manage the Node.js process
+    sudo npm install pm2@latest -g
+    # Install dependencies
+    npm install
+    # Create .env file
+    env_config="CLIENT_GLOBAL_SETTINGS={"APIKey":"","password":"","enterToSend":true}
 CLIENT_SESSION_SETTINGS={"title":"","saveSession":true,"APITemperature":0.6,"continuousDialogue":true,"APIModel":"gpt-3.5-turbo"}
 CLIENT_DEFAULT_MESSAGE='Powered by OpenAI Vercel
 - 如果本项目对你有所帮助，可以给小猫 [买点零食](https://cdn.jsdelivr.net/gh/ourongxing/chatgpt-vercel/assets/reward.gif)，但不接受任何付费功能请求。
@@ -195,9 +192,9 @@ SEND_KEY=
 SEND_CHANNEL=9
 NO_GFW=false
       "
-      echo "$env_config" | sudo tee .env
-      npm run build:vps
-      pm2_config="
+    echo "$env_config" | sudo tee .env
+    npm run build:vps
+    pm2_config="
       module.exports = {
   apps: [
     {
@@ -210,25 +207,22 @@ NO_GFW=false
     },
   ],
 };"
-      echo $pm2_config | sudo tee ecosystem.config.cjs
+    echo "$pm2_config" | sudo tee ecosystem.config.cjs
 
-      pm2 start ecosystem.config.cjs
+    pm2 start ecosystem.config.cjs
 
     if [ $? -eq 0 ]; then
-        echo "All done! You can now access your website at https://$domain_name."
-        pm2 list
+      echo "All done! You can now access your website at https://$domain_name."
+      pm2 list
     else
-        echo "Failed to start PM2 application"
+      echo "Failed to start PM2 application"
 
     fi
 
-      break
-      ;;
-    *)
-      echo "Invalid option. Please choose a valid number (1 or 2) or press Enter for the default."
-      ;;
+    break
+    ;;
+  *)
+    echo "Invalid option. Please choose a valid number (1 or 2) or press Enter for the default."
+    ;;
   esac
 done
-
-
-
