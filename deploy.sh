@@ -226,7 +226,6 @@ SEND_CHANNEL=9
 NO_GFW=false
       "
     echo "$env_config" | sudo tee .env
-    npm run build:vps
     pm2_config="
       module.exports = {
   apps: [
@@ -244,8 +243,7 @@ NO_GFW=false
   ],
 };"
     echo "$pm2_config" | sudo tee ecosystem.config.cjs
-
-    pm2 start ecosystem.config.cjs
+    npm run build:vps && pm2 start ecosystem.config.cjs
 
     if [ $? -eq 0 ]; then
       echo "All done! You can now access your website at https://$domain_name."
